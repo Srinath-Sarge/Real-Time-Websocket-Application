@@ -18,8 +18,6 @@ A real-time WebSocket-based chat application built using Go and Gorilla WebSocke
 - **WebSocket Client:** Native browser `WebSocket` API
 - **Local Hosting:** `localhost:8080`
 
-## 📁 Project Structure
-
 ## 🧪 Getting Started
 
 1. **Clone the repo**  
