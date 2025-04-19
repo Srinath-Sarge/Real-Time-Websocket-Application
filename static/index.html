@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Go WebSocket Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #253342;
+        }
+        #chat-box {
+            border: 1px solid #ccc;
+            background: #a9a9a9;
+            height: 400px;
+            padding: 10px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+        }
+        button {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2 style="color: aquamarine">WebSocket Chat</h2>
+<div id="chat-box"></div>
+<input type="text" id="msg" placeholder="Type a message..." />
+<button id="send">Send</button>
+
+<script>
+    window.onload = function () {
+        let username = "";
+        const ws = new WebSocket(`ws://${window.location.host}/ws`);
+
+        const chatBox = document.getElementById('chat-box');
+        const msgInput = document.getElementById('msg');
+        const sendBtn = document.getElementById('send');
+
+        while (!username){
+            username=prompt("Enter your Name: ")
+        }
+
+
+        ws.onopen = () => {
+            console.log("WebSocket connection opened.");
+        };
+
+        ws.onmessage = (event) => {
+            const msg = document.createElement('div');
+            msg.innerText = event.data;
+            chatBox.appendChild(msg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        function sendMessage(){
+            const message = msgInput.value.trim();
+            if (message !== "") {
+                const payload = {
+                    username: username,
+                    message: message
+                };
+                ws.send(JSON.stringify(payload));
+                msgInput.value = "";
+            }
+        }
+
+        sendBtn.addEventListener("click", sendMessage);
+
+        msgInput.addEventListener("keydown",(event) => {
+            if (event.key=="Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    };
+</script>
+
+
+</body>
+</html>
